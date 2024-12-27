@@ -6,7 +6,7 @@ use Random\RandomException;
 
 trait HasApiTokens
 {
-    protected string $apiToken;
+    public string $apiToken;
 
     /**
      * @throws RandomException
@@ -14,7 +14,7 @@ trait HasApiTokens
     public function createApiToken(int $userId): bool
     {
         $this->apiToken = bin2hex(random_bytes(40));
-        $sql = "INSERT INTO user_api_tokens (user_id,token,expires_at) VALUES (:user_id,:token,:expires_at)";
+        $sql = "INSERT INTO user_api_tokens (user_id,token,expires_at,created_at) VALUES (:user_id,:token,:expires_at,NOW())";
         $stmt = $this->pdo->prepare($sql);
         return $stmt->execute([
             'user_id' => $userId,

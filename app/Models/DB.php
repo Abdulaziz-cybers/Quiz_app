@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models;
+namespace app\Models;
 
 class DB
 {
@@ -18,5 +18,9 @@ class DB
 
         $this->pdo = new \PDO("mysql:host=$this->host;dbname=$this->dbname", $this->user, $this->password,
         [\PDO::ATTR_DEFAULT_FETCH_MODE => \PDO::FETCH_OBJ]);
+    }
+    public function getConnection(): \PDO
+    {
+        return $this->pdo;
     }
 }

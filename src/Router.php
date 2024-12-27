@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace Src;
 
 class Router {
     public string|array|int|null|false $currentRoute;
