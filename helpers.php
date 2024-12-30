@@ -9,3 +9,8 @@ use JetBrains\PhpStorm\NoReturn;
     echo json_encode($data);
     exit;
 }
+function view(string $page, array $data = []): void
+{
+    extract($data);
+    require 'resources/views/' . $page . '.php';
+}
