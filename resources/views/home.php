@@ -11,10 +11,10 @@
             text-align: center;
         }
     </style>
-    <link rel="stylesheet" href="./css/style.css">
+    <link rel="stylesheet" href="public/css/output.css">
 </head>
 <body>
     <h1 style="color: red">Hello</h1>
-    <h1 class="text-green">Hello</h1>
+    <h1 class="text-6xl text-sky-500 ">Hello</h1>
 </body>
 </html>
