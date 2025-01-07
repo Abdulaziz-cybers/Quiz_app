@@ -14,3 +14,6 @@ function view(string $page, array $data = []): void
     extract($data);
     require 'resources/views/' . $page . '.php';
 }
+function components(string $component): void{
+    require 'resources/views/components/' . $component . '.php';
+}
