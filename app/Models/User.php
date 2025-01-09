@@ -12,7 +12,7 @@ class User extends DB
     /**
      * @throws RandomException
      */
-    public function create(string $name, string $email, string $password)
+    public function create(string $name, string $email, string $password): void
     {
         $sql = "INSERT INTO users (full_name, email, password,created_at,updated_at) 
                     VALUES (:name, :email, :password,NOW(),NOW())";
@@ -24,9 +24,8 @@ class User extends DB
         ]);
         $userId = $this->pdo->lastInsertId();
         $this->createApiToken($userId);
-        return ;
     }
-    public function getUsers(string $email, string $password){
+    public function getUser(string $email, string $password){
         $sql = "SELECT * FROM users WHERE email = :email";
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute([":email" => $email]);

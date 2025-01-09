@@ -18,10 +18,11 @@ class UserController
             'full_name' => 'string',
             'email' => 'string',
             'password' => 'string',
+            'password_confirm' => 'string'
         ]);
         $user = new User();
         $user->create($userData['full_name'], $userData['email'], $userData['password']);
-        apiResponse(['message' => 'User created'],201);
+        apiResponse(['message' => 'User created','token' => $user->apiToken],201);
     }
     #[NoReturn] public function login(): void {
         $userData = $this->validate([
@@ -29,7 +30,7 @@ class UserController
             'password' => 'string',
         ]);
         $user = new User();
-        $user->getUsers($userData['email'], $userData['password']);
-        apiResponse(['message' => 'User loaded']);
+        $user->getUser($userData['email'], $userData['password']);
+        apiResponse(['message' => 'User logged in', 'token' => $user->apiToken]);
     }
 }
