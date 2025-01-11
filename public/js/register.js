@@ -3,7 +3,11 @@ async function register(){
         formData = new FormData(form);
     const { default: apiFetch } = await import('./utils/apiFetch.js');
     await apiFetch('/register',{method:'POST',body:formData})
-        .then(data => console.log(data))
+        .then(data => {
+            console.log(data)
+            localStorage.setItem('token',data.token)
+            window.location.href = '/dashboard';
+        })
         .catch((error) => {
             console.error(error.data.errors);
             Object.keys(error.data.errors).forEach(err => {

@@ -11,7 +11,7 @@ class Auth
     {
         $headers = getallheaders();
         if (!isset($headers['Authorization'])) {
-            apiResponse(['message' => 'Unauthorized'],403);
+            apiResponse(['message' => 'Unauthorized'],401);
         }
         if (!str_starts_with($headers['Authorization'], 'Bearer ')) {
             apiResponse([

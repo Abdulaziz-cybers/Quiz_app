@@ -33,4 +33,10 @@ class UserController
         $user->getUser($userData['email'], $userData['password']);
         apiResponse(['message' => 'User logged in', 'token' => $user->apiToken]);
     }
+    public function show (){
+        apiResponse(['user' => [
+            'name' => 'John Doe',
+            'email' => 'john@doe.com'
+        ]]);
+    }
 }
