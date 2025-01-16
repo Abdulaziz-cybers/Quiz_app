@@ -7,7 +7,8 @@ use Src\Router;
 Router::post('/api/register', [UserController::class, 'store']);
 Router::post('/api/login', [UserController::class, 'login']);
 
-Router::post('/api/quizzes', [QuizController::class, 'store']);
-Router::get('/api/users/{id}', [UserController::class, 'show'],'auth:api');
+Router::post('/api/quizzes', [QuizController::class, 'create']);
+
+Router::get('/api/user/getInfo', [UserController::class, 'show'],'auth:api');
 
 Router::notFound();

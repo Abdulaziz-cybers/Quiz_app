@@ -5,6 +5,7 @@ use App\Models\User;
 use App\Traits\Validator;
 use JetBrains\PhpStorm\NoReturn;
 use Random\RandomException;
+use Src\Auth;
 
 class UserController
 {
@@ -33,10 +34,13 @@ class UserController
         $user->getUser($userData['email'], $userData['password']);
         apiResponse(['message' => 'User logged in', 'token' => $user->apiToken]);
     }
-    public function show (){
-        apiResponse(['user' => [
-            'name' => 'John Doe',
-            'email' => 'john@doe.com'
-        ]]);
+    #[NoReturn] public function show(): void
+    {
+        $user = Auth::user();
+        apiResponse([
+            'message' => 'User information',
+            'data' => $user
+        ]);
     }
+
 }

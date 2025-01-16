@@ -1,4 +1,5 @@
 async function register(){
+    event.preventDefault();
     let form = document.getElementById('form_'),
         formData = new FormData(form);
     const { default: apiFetch } = await import('./utils/apiFetch.js');
@@ -10,6 +11,7 @@ async function register(){
         })
         .catch((error) => {
             console.error(error.data.errors);
+            document.getElementById('error').innerHTML = '';
             Object.keys(error.data.errors).forEach(err => {
                 document.getElementById('error').innerHTML += `<p class="text-red-500 mt-1">${error.data.errors[err]}</p>`;
             })

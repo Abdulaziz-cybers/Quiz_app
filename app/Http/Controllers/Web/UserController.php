@@ -7,4 +7,13 @@ class UserController
     public function home(): void{
         view('dashboard/home');
     }
+    public function statistics(): void{
+        view('dashboard/statistics');
+    }
+    public function myQuizzes(): void{
+        view('dashboard/my-quizzes');
+    }
+    public function createQuiz(): void{
+        view('dashboard/create-quiz');
+    }
 }

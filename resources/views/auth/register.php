@@ -1,4 +1,4 @@
-<?php components('header');?>
+<?php componentsMain('header');?>
 <div class="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
     <div class="max-w-md w-full space-y-8 bg-white p-8 rounded-lg shadow-md">
         <div>
@@ -8,7 +8,7 @@
                 <a href="/login" class="font-medium text-indigo-600 hover:text-indigo-500">Sign in</a>
             </p>
         </div>
-        <form id="form_" class="mt-8 space-y-6" action="#" method="POST">
+        <form id="form_" class="mt-8 space-y-6" onsubmit="register()">
             <div class="rounded-md shadow-sm -space-y-px">
                 <div>
                     <label for="full_name" class="sr-only">Full name</label>
@@ -50,9 +50,9 @@
                     <a href="#" class="text-indigo-600 hover:text-indigo-500">Terms and Conditions</a>
                 </label>
             </div>
-
+            <div id="error"></div>
             <div>
-                <button type="button" onclick="register()"
+                <button type="submit"
                         class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                     Create Account
                 </button>
@@ -60,7 +60,7 @@
         </form>
     </div>
 </div>
-<script src="js/register.js"></script>
+<script src="/js/register.js"></script>
 <script>
     document.getElementById('togglePassword').addEventListener('click', function () {
         const passwordInput = document.getElementById('password');

@@ -1,6 +1,6 @@
 <?php
-components('header');
-components('navbar');?>
+componentsMain('header');
+componentsMain('navbar');?>
 
 <!-- Hero Section -->
 <div class="bg-indigo-600 text-white py-20">
@@ -106,5 +106,5 @@ components('navbar');?>
     </div>
 </section>
 <?php
-components('footer');
-components('scripts');?>
+componentsMain('footer');
+componentsMain('scripts');?>

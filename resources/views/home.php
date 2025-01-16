@@ -1,6 +1,6 @@
 <?php
-components('header');
-components('navbar');?>
+componentsMain('header');
+componentsMain('navbar');?>
 
 <main>
     <!-- Hero Section -->
@@ -145,5 +145,5 @@ components('navbar');?>
         </div>
     </div>
 <?php
-components('footer');
-components('scripts');?>
+componentsMain('footer');
+componentsMain('scripts');?>

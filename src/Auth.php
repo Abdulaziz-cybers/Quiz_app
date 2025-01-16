@@ -2,31 +2,70 @@
 
 namespace Src;
 
-use app\Models\DB;
+use App\Models\DB;
+use App\Models\User;
 use PDO;
 
 class Auth
 {
-    public static function check(): mixed
+    public static function getToken(): string|array
     {
         $headers = getallheaders();
-        if (!isset($headers['Authorization'])) {
-            apiResponse(['message' => 'Unauthorized'],401);
-        }
-        if (!str_starts_with($headers['Authorization'], 'Bearer ')) {
+        if (!isset($headers['Authorization']))
+        {
             apiResponse([
-                'message' => 'Authorization format is invalid, allowed format is Bearer'
+                'errors' => [
+                    'message' => 'Unauthorized'
+                ]
+            ], 401);
+        }
+        if (!str_starts_with($headers['Authorization'], 'Bearer '))
+        {
+            apiResponse([
+                'errors' => [
+                    'message' => 'Authorization format is invalid, allowed format is Bearer'
+                ]
             ],400);
         }
-        $token = str_replace('Bearer ', '', $headers['Authorization']);
-        $pdo = (new DB())->getConnection();
-        $query = "SELECT * FROM user_api_token WHERE token=:token";
+        return str_replace('Bearer ', '', $headers['Authorization']);
+    }
+
+    public static function getUserCorrectToken()
+    {
+        $db = new DB();
+        $pdo = $db->getConnection();
+        $query = "SELECT * FROM user_api_tokens WHERE token=:token and expires_at >= NOW()";
         $stmt = $pdo->prepare($query);
-        $stmt->execute([':token' => $token]);
-        $user = $stmt->fetch();
-        if (!$user) {
-            apiResponse(['message' => 'Unauthorized'],403);
+        $stmt->execute([
+            ':token' => self::getToken()
+        ]);
+        return $stmt->fetch();
+    }
+    public static function check(): bool
+    {
+
+        if (!self::getUserCorrectToken())
+        {
+            apiResponse([
+                'errors' => [
+                    'message' => 'Unauthorized'
+                ]
+            ], 401);
         }
-        return $user;
+        return true;
+    }
+
+    public static function user()
+    {
+        $token = self::getUserCorrectToken();
+        if (!$token){
+            apiResponse([
+                'errors' => [
+                    'message' => 'Unauthorized'
+                ]
+            ], 401);
+        }
+        $user = new User();
+        return $user->getUserById($token->user_id);
     }
 }
