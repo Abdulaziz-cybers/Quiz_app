@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use app\Models\DB;
+use App\Models\DB;
 
 class Question extends DB
 {

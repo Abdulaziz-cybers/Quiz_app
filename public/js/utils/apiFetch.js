@@ -15,13 +15,15 @@ function apiFetch(uri, options = {}){
         .then(async response=>{
             if (!response.ok) {
                 if (response.status === 401) {
-                    if (window.location.pathname !== '/login' || window.location.pathname !== '/register'){
+                    if (window.location.pathname === '/login' || window.location.pathname === '/register'){}
+                    else {
                         window.location.href = '/login';
                         return;
                     }
                 }
-                const error = await response.json();
-                throw new Error(error.message);
+                const error = new Error("Http error!")
+                error.data = await response.json();
+                throw error;
             }
             return response.json();
         })

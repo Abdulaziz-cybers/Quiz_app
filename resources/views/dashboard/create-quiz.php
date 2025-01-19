@@ -15,7 +15,7 @@ componentsDashboard('topNavigation');
                     </div>
 
                     <!-- Main Form -->
-                    <form class="space-y-4" id="quizForm">
+                    <form class="space-y-4" id="quizForm" method="Post" onsubmit="createQuiz()">
                         <!-- Quiz Details Section -->
                         <div class="bg-white p-6 rounded-lg shadow-md">
                             <h3 class="text-xl font-semibold text-gray-800 mb-4">Quiz Details</h3>
@@ -73,7 +73,6 @@ componentsDashboard('topNavigation');
         await apiFetch('/quizzes',{method:'POST',body:formData})
             .then(data => {
                 console.log(data)
-                localStorage.setItem('token',data.token)
                 window.location.href = '/dashboard';
             })
             .catch((error) => {

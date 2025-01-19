@@ -22,8 +22,11 @@ class UserController
             'password_confirm' => 'string'
         ]);
         $user = new User();
-        $user->create($userData['full_name'], $userData['email'], $userData['password']);
-        apiResponse(['message' => 'User created','token' => $user->apiToken],201);
+        if($user->create($userData['full_name'], $userData['email'], $userData['password'])){
+            apiResponse(['message' => 'User created','token' => $user->apiToken],201);
+        }
+        apiResponse(['errors' => ['error' => 'User already exists']], 409);
+
     }
     #[NoReturn] public function login(): void {
         $userData = $this->validate([
@@ -31,8 +34,15 @@ class UserController
             'password' => 'string',
         ]);
         $user = new User();
-        $user->getUser($userData['email'], $userData['password']);
-        apiResponse(['message' => 'User logged in', 'token' => $user->apiToken]);
+        if($user->getUser($userData['email'], $userData['password'])) {
+            apiResponse(['message' => 'User logged in', 'token' => $user->apiToken]);
+        }
+        apiResponse([
+            'errors' => [
+                'error' => 'Invalid email or password'
+            ]
+        ], 401);
+
     }
     #[NoReturn] public function show(): void
     {

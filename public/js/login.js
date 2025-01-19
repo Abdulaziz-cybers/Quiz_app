@@ -6,12 +6,11 @@ async function login(){
     await apiFetch('/login',{method:'POST',body:formData})
         .then(data => {
             console.log(data)
-            alert(123)
             localStorage.setItem('token',data.token)
             window.location.href = '/dashboard';
         })
         .catch((error) => {
-                console.error(error.data.errors);
+                console.error(error.data);
                 document.getElementById('error').innerHTML = '';
                 Object.keys(error.data.errors).forEach(err => {
                     document.getElementById('error').innerHTML += `<p class="text-red-500 mt-1">${error.data.errors[err]}</p>`;

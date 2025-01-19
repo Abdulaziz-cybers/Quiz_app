@@ -12,18 +12,19 @@ class User extends DB
     /**
      * @throws RandomException
      */
-    public function create(string $name, string $email, string $password): void
+    public function create(string $name, string $email, string $password)
     {
         $sql = "INSERT INTO users (full_name, email, password,created_at,updated_at) 
                     VALUES (:name, :email, :password,NOW(),NOW())";
         $stmt = $this->pdo->prepare($sql);
-        $stmt->execute([
+        $prompt = $stmt->execute([
             ":name" => $name,
             ":email" => $email,
             ":password" => password_hash($password, PASSWORD_DEFAULT)
         ]);
         $userId = $this->pdo->lastInsertId();
         $this->createApiToken($userId);
+        return $prompt;
     }
     public function getUser(string $email, string $password){
         $sql = "SELECT * FROM users WHERE email = :email";
@@ -34,7 +35,7 @@ class User extends DB
             $this->createApiToken($user->id);
             return $user;
         }
-        apiResponse(['error' => 'Invalid credentials']);
+        return false;
     }
     public function getUserById(int $id): mixed
     {

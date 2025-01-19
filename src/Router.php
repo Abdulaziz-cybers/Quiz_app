@@ -62,7 +62,7 @@ class Router {
                 $resourceRoute = str_replace('{id}', $resourceValue, $route);
                 if ($resourceRoute == self::getRoute()) {
                     self::middleware($middleware);
-                    (new $callback[0])->{$callback[1]}();
+                    (new $callback[0])->{$callback[1]}($resourceValue);
                     exit();
                 }
             }
