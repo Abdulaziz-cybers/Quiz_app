@@ -45,10 +45,13 @@ class Quiz extends DB
         $stmt->execute([':userId' => $userId]);
         return $stmt->fetchAll();
     }
-    public function deleteByQuizId(int $quizId): bool
+
+    public function find(int $quizId)
     {
-        $query = "DELETE FROM questions WHERE quiz_id = :quizId";
+        $query = "SELECT * FROM quizzes WHERE id = :quizId";
         $stmt = $this->pdo->prepare($query);
-        return $stmt->execute([':quizId' => $quizId]);
+        $stmt->execute([':quizId' => $quizId]);
+        return $stmt->fetch();
     }
+
 }

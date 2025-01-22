@@ -44,9 +44,12 @@ class Router {
 
     public static function put ($route, $callback,?string $middleware=null): void
     {
-        if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['_method']) && strtoupper($_POST['_method']) === 'PUT') {
-            self::extracted($route, $callback,$middleware);
+        if ($_SERVER['REQUEST_METHOD'] == 'POST' || $_SERVER['REQUEST_METHOD'] == 'PUT') {
+            if ((isset($_POST['_method']) && $_POST['_method'] == 'PUT') || $_SERVER['REQUEST_METHOD'] == 'PUT'){
+                self::extracted($route, $callback,$middleware);
+            }
         }
+
     }
     public static function delete ($route, $callback,?string $middleware=null): void
     {
@@ -101,7 +104,7 @@ class Router {
     }
     public static function notFound(): void{
         if (self::isApiCall()) {
-            apiResponse(['error' => 'Not found']);
+            apiResponse(['error' => 'Not found'],404);
         }
         view('404');
     }

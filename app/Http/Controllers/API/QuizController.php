@@ -12,6 +12,13 @@ use Src\Auth;
 class QuizController
 {
     use Validator;
+    #[NoReturn] public function get(int $quizId): void
+    {
+        $quiz = (new Quiz())->find($quizId);
+        $questions = (new Question())->getByQuizId($quizId);
+        $quiz->questions = $questions;
+        apiResponse($quiz);
+    }
     public function create(): void
     {
         $quizData = $this->validate([
@@ -53,9 +60,16 @@ class QuizController
         $option = new Option();
 
         $quiz->update($quizId, $quizData['title'], $quizData['description'], $quizData['timeLimit']);
-        $quiz->deleteByQuizId($quizId);
+        $question->deleteByQuizId($quizId);
 
-
+        foreach ($quizData['questions'] as $questionData) {
+            $questionId = $question->create($quizId, $questionData['quiz']);
+            $isCorrect = $questionData['correct'];
+            foreach ($questionData['options'] as $key => $optionData) {
+                $option->create($questionId, $optionData, $isCorrect == $key );
+            }
+        }
+        apiResponse(['message' => 'Quiz updated']);
     }
     #[NoReturn] public function destroy(int $quizId): void
     {

@@ -19,7 +19,8 @@ class UserController
     public function takeQuiz(): void{
         view('quiz/take-quiz');
     }
-    public function update(int $id){
+    public function update(int $id): void
+    {
         view('dashboard/update',['id' => $id]);
     }
 }
