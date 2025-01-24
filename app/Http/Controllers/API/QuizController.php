@@ -42,6 +42,23 @@ class QuizController
             }
         }
     }
+    #[NoReturn] public function show(int $quizId): void
+    {
+        $quiz = (new Quiz())->find($quizId);
+        $questions = (new Question())->getByQuizId($quizId);
+        $quiz->questions = $questions;
+        apiResponse($quiz);
+    }
+    #[NoReturn] public function showByUniqueValue(string $uniqueValue): void
+    {
+        $quiz = (new Quiz())->findByUniqueValue($uniqueValue);
+        if($quiz) {
+            $questions = (new Question())->getByQuizId($quiz->id);
+            $quiz->questions = $questions;
+            apiResponse($quiz);
+        }
+        apiResponse(['errors' => ['message' => 'quiz not found']], 400);
+    }
     #[NoReturn] public function index(): void
     {
         $quizzes = (new Quiz())->getByUserId(Auth::user()->id);

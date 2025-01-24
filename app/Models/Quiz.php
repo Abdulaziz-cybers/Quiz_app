@@ -8,9 +8,10 @@ class Quiz extends DB
 {
     public function create(int $userId, string $title, string $description, int $timeLimit): false|string
     {
-        $query = "INSERT INTO quizzes (user_id,title,description,time_limit,updated_at,created_at) 
-                VALUES (:userId,:title,:description,:timeLimit,NOW(),NOW())";
+        $query = "INSERT INTO quizzes (unique_value,user_id,title,description,time_limit,updated_at,created_at) 
+                VALUES (:uniqueValue,:userId,:title,:description,:timeLimit,NOW(),NOW())";
         $this->pdo->prepare($query)->execute([
+            ':uniqueValue' => uniqid(),
             ':userId' => $userId,
             ':title' => $title,
             ':description' => $description,
@@ -53,5 +54,13 @@ class Quiz extends DB
         $stmt->execute([':quizId' => $quizId]);
         return $stmt->fetch();
     }
-
+    public function findByUniqueValue(string $uniqueValue)
+    {
+        $query = "SELECT * FROM quizzes WHERE unique_value = :uniqueValue";
+        $stmt = $this->pdo->prepare($query);
+        $stmt->execute([
+            ":uniqueValue" => $uniqueValue,
+        ]);
+        return $stmt->fetch();
+    }
 }

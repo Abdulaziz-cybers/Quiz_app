@@ -43,6 +43,7 @@ componentsDashboard('topNavigation');
                                 </div>
                             </div>
 
+
                             <!-- Questions Section -->
                             <div class="bg-white p-6 rounded-lg shadow-md">
                                 <div class="flex justify-between items-center mb-4">
@@ -271,7 +272,7 @@ componentsDashboard('topNavigation');
                                                                 ×
                                                             </button>
                                                     </div>`;
-                    })}
+                                                })}
 
                                                 </div>
 
@@ -340,8 +341,6 @@ componentsDashboard('topNavigation');
                 structuredData[key] = value;
             }
         }
-
-        console.log(structuredData)
 
         const {default: apiFetch} = await import('/js/utils/apiFetch.js');
         await apiFetch(`/quizzes/${<?php echo $id; ?>}`, {
