@@ -9,6 +9,10 @@ use JetBrains\PhpStorm\NoReturn;
     echo json_encode($data);
     exit;
 }
+function assets(string $path): string
+{
+    return $_ENV['APP_URL'] . 'public' . $path;
+}
 function view(string $page, array $data = []): void
 {
     extract($data);

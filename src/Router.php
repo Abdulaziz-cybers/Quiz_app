@@ -35,13 +35,6 @@ class Router {
             self::extracted($route, $callback,$middleware);
         }
     }
-    public static function putApi ($route, $callback,?string $middleware=null): void
-    {
-        if ($_SERVER['REQUEST_METHOD'] == 'PUT') {
-            self::extracted($route, $callback,$middleware);
-        }
-    }
-
     public static function put ($route, $callback,?string $middleware=null): void
     {
         if ($_SERVER['REQUEST_METHOD'] == 'POST' || $_SERVER['REQUEST_METHOD'] == 'PUT') {

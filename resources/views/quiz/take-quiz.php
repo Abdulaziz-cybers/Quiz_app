@@ -20,7 +20,7 @@
                         <a href="/dashboard" class="text-gray-600 hover:text-gray-900">Dashboard</a>
                         <!--                            <a href="#how-it-works" class="text-gray-600 hover:text-gray-900">How It Works</a>-->
                         <!--                            <a href="/login" class="text-gray-600 hover:text-gray-900">Login</a>-->
-                        <a href="/register"
+                        <a href="/create-quiz"
                            class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700">
                             Create Quiz
                         </a>
@@ -48,11 +48,8 @@
     <main class="flex-grow container mx-auto px-4 py-8">
         <div id="start-card" class="max-w-4xl mx-auto bg-white rounded-lg shadow-md p-6">
             <div class="text-center">
-                <h2 class="text-2xl font-bold text-gray-800 mb-4" id="title">Quiz Title</h2>
-                <p class="text-xl text-gray-700 mb-6" id="description">Lorem ipsum dolor sit amet, consectetur
-                    adipisicing elit.
-                    Accusamus delectus dolorum eligendi esse excepturi in quam qui veritatis voluptatibus?
-                    Dolore.</p>
+                <h2 class="text-2xl font-bold text-gray-800 mb-4" id="title">Quiz loading ...</h2>
+                <p class="text-xl text-gray-700 mb-6" id="description">Description loading ...</p>
 
                 <div class="flex justify-center space-x-12 mb-8">
                     <div class="text-center">
@@ -123,22 +120,23 @@
             <!-- Submit Button -->
             <div class="mt-8 text-center">
                 <button id="submit-quiz" class="px-8 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700">
-                    Submit Quiz
+                    Submit Question
                 </button>
             </div>
         </div>
         <div id="results-card" class="max-w-4xl mx-auto bg-white rounded-lg shadow-md p-6 hidden">
             <div class="text-center">
-                <h2 class="text-2xl font-bold text-gray-800 mb-4">Quiz Complete!</h2>
-                <h3 class="text-xl text-gray-700 mb-6">JavaScript Fundamentals Quiz</h3>
+                <h2 class="text-2xl font-bold text-gray-800 mb-4">Quiz Completed!</h2>
+                <h3 class="text-xl text-gray-700 mb-6" id="result-title"></h3>
+                <h4 class="text-xs text-gray-700 mb-6" id="result-description"></h4>
 
                 <div class="flex justify-center space-x-12 mb-8">
                     <div class="text-center">
-                        <p class="text-3xl font-bold text-blue-600" id="final-score">0/10</p>
+                        <p class="text-3xl font-bold text-blue-600" id="final-score"></p>
                         <p class="text-gray-600">Final Score</p>
                     </div>
                     <div class="text-center">
-                        <p class="text-3xl font-bold text-blue-600" id="time-taken">0:00</p>
+                        <p class="text-3xl font-bold text-blue-600" id="result-time-taken"></p>
                         <p class="text-gray-600">Time Taken</p>
                     </div>
                 </div>
@@ -162,24 +160,22 @@
 
     <!-- Quiz JavaScript -->
     <script>
-        let questions;
-        let quizData;
+        let questions,
+            quizData,
+            result,
+            resultData,
+            timer;
         async function getQuizItems() {
             const {default: apiFetch} = await import('/js/utils/apiFetch.js');
             try {
-                const data = await apiFetch(`/quizzes/<?php echo $uniqueValue; ?>/getByUniqueValue`, {
-                    method: 'GET'
-                });
+                const data = await apiFetch(`/quizzes/<?php echo $uniqueValue; ?>/getByUniqueValue`, {method: 'GET'});
                 document.getElementById('title').innerText = data.title;
                 document.getElementById('description').innerText = data.description;
                 document.getElementById('time-taken').innerText = data.time_limit + ":00";
                 quizData = data;
                 return data.questions; // Assuming the API returns questions in the data
             } catch (error) {
-                document.getElementById('error').innerHTML = '';
-                Object.keys(error.data.errors).forEach(err => {
-                    document.getElementById('error').innerHTML += `<p class="text-red-500">${error.data.errors[err]}</p>`;
-                });
+                console.error('Failed to load quiz items:', error);
                 throw error;
             }
         }
@@ -236,24 +232,29 @@
                     const {default: apiFetch} = await import('/js/utils/apiFetch.js');
                     await apiFetch('/results', {method: 'POST', body: JSON.stringify({quiz_id: quizData.id})})
                         .then((data) => {
+                            result = data.result;
                             console.log(data)
                         })
                         .catch((error) => {
-                            document.getElementById('error').innerHTML = '';
-                            Object.keys(error.data.errors).forEach(err => {
-                                document.getElementById('error').innerHTML += `<p class="text-red-500 mt-1">${error.data.errors[err]}</p>`;
-                            })
+                            resultData = error.data.result;
+                            document.getElementById('result-time-taken').innerText = resultData.time_taken;
+                            document.getElementById('result-title').innerText = resultData.quiz.title;
+                            document.getElementById('result-description').innerText = resultData.quiz.description;
+                            document.getElementById('final-score').innerText = resultData.correct_answers + "/" + resultData.question_count;
+                            document.getElementById('results-card').classList.remove('hidden');
+                            document.getElementById('questionContainer').classList.add('hidden');
                         });
                 }
+
                 startQuiz();
                 let startQuizContainer = document.getElementById('start-card');
                 startQuizContainer.classList.add('hidden');
                 document.getElementById('questionContainer').classList.remove('hidden');
-                startTimer(quizData.time_limit*60, document.getElementById('timer')); // 20 minutes
+                startTimer(quizData.time_limit * 60, document.getElementById('timer')); // 20 minutes
             });
 
             function startTimer(duration, display) {
-                let timer = duration;
+                timer = duration;
                 return setInterval(() => {
                     const minutes = Math.floor(timer / 60);
                     const seconds = timer % 60;
@@ -298,16 +299,61 @@
                 questions.splice(currentQuestionIndex, 1);
                 let question = questions[currentQuestionIndex],
                     questionContainer = document.getElementById('questionContainer');
+
+                async function submitAnswer() {
+                    const {default: apiFetch} = await import('/js/utils/apiFetch.js');
+                    await apiFetch('/answers', {
+                        method: 'POST',
+                        body: JSON.stringify({
+                            result_id: result.id,
+                            option_id: formData.get('answer')
+                        })
+                    })
+                        .then(data => {
+                            console.log(data)
+                        })
+                        .catch((error) => {
+                            console.error(error.data);
+                        });
+                }
+
+                submitAnswer();
                 if (question) {
                     displayQuestion(question);
                 } else {
-                    // display result
-                    questionContainer.innerHTML = '';
-                    document.getElementById('results-card').classList.remove('hidden');
-                }
-            });
-        }
+                    async function setTakenTime() {
+                        const {default: apiFetch} = await import('/js/utils/apiFetch.js');
+                        let timerText = document.getElementById("timer").textContent; // Get the text (e.g., "5:00")
+                        let [minutes, seconds] = timerText.split(":").map(Number);
+                        let total = minutes * 60 + seconds;
+                        await apiFetch(`/results/${result.id}`, {
+                            method: 'PUT',
+                            headers: {'Content-Type': 'application/json'},
+                            body: JSON.stringify({
+                                result_id: result.id,
+                                time_taken: timer - total,
+                                quiz_id: quizData.id
+                            })
+                        })
+                            .then(data => {
+                                document.getElementById('result-time-taken').innerText = data.result.time_taken;
+                                document.getElementById('result-title').innerText = data.result.quiz.title;
+                                document.getElementById('result-description').innerText = data.result.quiz.description;
+                                document.getElementById('final-score').innerText = data.result.correct_answers + "/" + data.result.questions_count;
+                                // display result
+                                questionContainer.innerHTML = '';
+                                document.getElementById('results-card').classList.remove('hidden');
+                            })
+                            .catch((error) => {
+                                console.error(error.data);
+                            });
 
+                    }
+
+                    setTakenTime()
+                }
+            })
+        }
         quiz();
     </script>
     <script>

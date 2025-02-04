@@ -46,4 +46,11 @@ class Question extends DB
         $stmt = $this->pdo->prepare($query);
         return $stmt->execute([':quizId' => $quizId]);
     }
+    public function getCountOfQuestions(int $quizId): int
+    {
+        $query = "SELECT COUNT(*) FROM questions WHERE quiz_id = :quizId";
+        $stmt = $this->pdo->prepare($query);
+        $stmt->execute([':quizId' => $quizId]);
+        return $stmt->fetchColumn();
+    }
 }
