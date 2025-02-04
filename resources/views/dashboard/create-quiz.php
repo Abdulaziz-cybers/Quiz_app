@@ -4,7 +4,7 @@ componentsDashboard('sidebar');
 //Main Content
 componentsDashboard('topNavigation');
 ?>
-<script src="/js/dashboard/add-quiz.js"></script>
+<script src="<?php echo assets('/js/dashboard/add-quiz.js') ?>"></script>
         <!-- Content -->
         <main class="p-6">
             <div class="min-h-screen bg-gray-100">

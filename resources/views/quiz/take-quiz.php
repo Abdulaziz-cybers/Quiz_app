@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Take Quiz - Quiz Platform</title>
-    <script src="/js/dashboard/getUserInfo.js"></script>
+    <script src="<?php echo assets('/js/dashboard/getUserInfo.js')?>"></script>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="flex flex-col min-h-screen bg-gray-100">
