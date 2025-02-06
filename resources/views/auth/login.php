@@ -70,7 +70,7 @@
         event.preventDefault();
         let form = document.getElementById('form'),
             formData = new FormData(form);
-        const { default: apiFetch } = await import('<?php echo assets('js/utils/apiFetch')?>');
+        const { default: apiFetch } = await import('<?php echo assets('/js/utils/apiFetch')?>');
         await apiFetch('/login',{method:'POST',body:formData})
             .then(data => {
                 console.log(data)
