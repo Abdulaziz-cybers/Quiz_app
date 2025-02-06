@@ -52,7 +52,7 @@ componentsDashboard('topNavigation');
 </div>
 <script>
     async function quizzes (){
-        const { default: apiFetch } = await import('/js/utils/apiFetch.js'),
+        const { default: apiFetch } = await import("<?php echo assets('/js/utils/apiFetch.js')?>"),
             quizList = document.getElementById('quizList');
         await apiFetch('/quizzes',{method:'GET'})
             .then(data => {
@@ -100,7 +100,7 @@ componentsDashboard('topNavigation');
 
     async function deleteQuiz(id){
         if(confirm('Are you sure you want to delete this quiz?')){
-            const { default: apiFetch } = await import('/js/utils/apiFetch.js');
+            const { default: apiFetch } = await import("<?php echo assets('/js/utils/apiFetch.js')?>");
             await apiFetch(`/quizzes/${id}`,{method:'DELETE'})
                 .then(data => {
                     console.log(data)

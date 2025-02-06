@@ -166,7 +166,7 @@
             resultData,
             timer;
         async function getQuizItems() {
-            const {default: apiFetch} = await import('/js/utils/apiFetch.js');
+            const {default: apiFetch} = await import('<?php echo assets('/js/utils/apiFetch.js')?>');
             try {
                 const data = await apiFetch(`/quizzes/<?php echo $uniqueValue; ?>/getByUniqueValue`, {method: 'GET'});
                 document.getElementById('title').innerText = data.title;
@@ -229,7 +229,7 @@
                 // send request to an API
                 async function startQuiz() {
                     console.log(quizData)
-                    const {default: apiFetch} = await import('/js/utils/apiFetch.js');
+                    const {default: apiFetch} = await import('<?php echo assets('/js/utils/apiFetch.js')?>');
                     await apiFetch('/results', {method: 'POST', body: JSON.stringify({quiz_id: quizData.id})})
                         .then((data) => {
                             result = data.result;
@@ -301,7 +301,7 @@
                     questionContainer = document.getElementById('questionContainer');
 
                 async function submitAnswer() {
-                    const {default: apiFetch} = await import('/js/utils/apiFetch.js');
+                    const {default: apiFetch} = await import('<?php echo assets('/js/utils/apiFetch.js')?>');
                     await apiFetch('/answers', {
                         method: 'POST',
                         body: JSON.stringify({
@@ -322,7 +322,7 @@
                     displayQuestion(question);
                 } else {
                     async function setTakenTime() {
-                        const {default: apiFetch} = await import('/js/utils/apiFetch.js');
+                        const {default: apiFetch} = await import('<?php echo assets('/js/utils/apiFetch.js')?>');
                         let timerText = document.getElementById("timer").textContent; // Get the text (e.g., "5:00")
                         let [minutes, seconds] = timerText.split(":").map(Number);
                         let total = minutes * 60 + seconds;

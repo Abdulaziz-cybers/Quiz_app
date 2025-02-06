@@ -60,8 +60,26 @@
         </form>
     </div>
 </div>
-<script src="/js/register.js"></script>
 <script>
+    async function register(){
+        event.preventDefault();
+        let form = document.getElementById('form_'),
+            formData = new FormData(form);
+        const { default: apiFetch } = await import('<?php echo assets('js/utils/apiFetch')?>');
+        await apiFetch('/register',{method:'POST',body:formData})
+            .then(data => {
+                console.log(data)
+                localStorage.setItem('token',data.token)
+                window.location.href = '/dashboard';
+            })
+            .catch((error) => {
+                console.error(error.data.errors);
+                document.getElementById('error').innerHTML = '';
+                Object.keys(error.data.errors).forEach(err => {
+                    document.getElementById('error').innerHTML += `<p class="text-red-500 mt-1">${error.data.errors[err]}</p>`;
+                })
+            });
+    }
     document.getElementById('togglePassword').addEventListener('click', function () {
         const passwordInput = document.getElementById('password');
         const passwordIcon = document.getElementById('passwordIcon');
@@ -93,6 +111,5 @@
     });
 </script>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
-
 </body>
 </html>
